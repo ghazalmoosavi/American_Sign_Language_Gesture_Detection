@@ -1,8 +1,3 @@
-"""
-Dataset Setup Utility
-Uses a local ASL dataset folder and prepares configs.
-"""
-
 import os
 import argparse
 from pathlib import Path
