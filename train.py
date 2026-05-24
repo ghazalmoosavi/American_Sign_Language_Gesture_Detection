@@ -1,8 +1,3 @@
-"""
-ASL Gesture Detection — YOLOv8 Training Pipeline
-CIoU loss · Cosine LR · Augmented training
-"""
-
 import os
 import yaml
 import argparse
@@ -17,10 +12,6 @@ try:
 except ImportError:
     wandb = None
 
-
-# ──────────────────────────────────────────────
-# Configuration
-# ──────────────────────────────────────────────
 
 DEFAULT_CONFIG = {
     # Model
@@ -82,12 +73,7 @@ DEFAULT_CONFIG = {
 
 
 def resolve_device(device_arg: str = "auto") -> str:
-    """
-    Choose the best device for the current machine.
-    - CUDA if available
-    - MPS on Apple Silicon if available
-    - CPU otherwise
-    """
+
     if device_arg and device_arg != "auto":
         return device_arg
 
@@ -139,28 +125,28 @@ def build_dataset_yaml(dataset_root: str, output_path: str = "configs/asl.yaml")
 
 
 def train(cfg: dict, dataset_root: str | None = None, use_wandb: bool = False):
-    # ── Dataset ──────────────────────────────────
+    
     if dataset_root:
         cfg["data"] = build_dataset_yaml(dataset_root)
 
-    # ── Device ───────────────────────────────────
+    
     cfg["device"] = resolve_device(cfg.get("device", "auto"))
     LOGGER.info(f"Using device: {cfg['device']}")
 
-    # ── W&B (optional) ───────────────────────────
+    
     if use_wandb:
         if wandb is None:
             raise ImportError("wandb is not installed. Run: pip install wandb")
         wandb.init(project="asl-detection", config=cfg)
 
-    # ── Model ────────────────────────────────────
+    
     model = YOLO(cfg.pop("model"))
 
-    # ── Train ────────────────────────────────────
+    
     LOGGER.info("Starting ASL training with CIoU loss ...")
     results = model.train(**cfg)
 
-    # ── Summary ──────────────────────────────────
+    
     metrics = results.results_dict
     LOGGER.info("\n" + "─" * 50)
     LOGGER.info("Training complete!")
@@ -184,9 +170,7 @@ def resume(checkpoint: str, extra_epochs: int = 50, device: str = "auto"):
     return model, results
 
 
-# ──────────────────────────────────────────────
-# CLI
-# ──────────────────────────────────────────────
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train YOLOv8 for ASL detection")
