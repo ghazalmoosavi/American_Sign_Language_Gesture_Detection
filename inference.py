@@ -1,8 +1,3 @@
-"""
-ASL Real-Time Inference Engine
-Webcam · Video file · Image
-"""
-
 import cv2
 import time
 import argparse
@@ -12,9 +7,6 @@ from collections import deque
 from ultralytics import YOLO
 import torch
 
-# ──────────────────────────────────────────────
-# ASL alphabet + blank
-# ──────────────────────────────────────────────
 ASL_CLASSES = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + ["del", "nothing", "space"]
 
 CONF_COLORS = {
@@ -52,10 +44,6 @@ def find_best_weights(start: Path = Path(".")) -> str | None:
     return None
 
 
-# ──────────────────────────────────────────────
-# FPS tracker
-# ──────────────────────────────────────────────
-
 class FPSMeter:
     def __init__(self, window: int = 30):
         self._times = deque(maxlen=window)
@@ -69,11 +57,6 @@ class FPSMeter:
             return 0.0
         avg = sum(self._times) / len(self._times)
         return 1.0 / avg if avg > 0 else 0.0
-
-
-# ──────────────────────────────────────────────
-# Letter buffer → word builder
-# ──────────────────────────────────────────────
 
 class WordBuilder:
     def __init__(self, hold_frames: int = 12, max_word: int = 20):
@@ -128,10 +111,6 @@ class WordBuilder:
         self._current = None
         self._count = 0
 
-
-# ──────────────────────────────────────────────
-# HUD drawing helpers
-# ──────────────────────────────────────────────
 
 def draw_hud(frame, fps, word_builder, model_name):
     h, w = frame.shape[:2]
@@ -194,9 +173,6 @@ def draw_detections(frame, result, class_names):
     return top_label
 
 
-# ──────────────────────────────────────────────
-# Main inference loop
-# ──────────────────────────────────────────────
 
 def run_inference(
     weights: str,
@@ -283,9 +259,6 @@ def run_inference(
     print(f"\nFinal sentence: {word_builder.display}")
 
 
-# ──────────────────────────────────────────────
-# CLI
-# ──────────────────────────────────────────────
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Real-time ASL inference with YOLOv8")
