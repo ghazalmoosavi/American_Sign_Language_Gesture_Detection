@@ -1,8 +1,3 @@
-"""
-ASL Model Evaluation
-Generates per-class precision/recall/F1, confusion matrix, and speed benchmarks.
-"""
- 
 import json
 import time
 import argparse
@@ -13,10 +8,6 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from ultralytics import YOLO
  
- 
-# ──────────────────────────────────────────────
-# Auto-detect best weights
-# ──────────────────────────────────────────────
  
 def find_best_weights(start: Path = Path(".")) -> str | None:
     candidates = sorted(start.rglob("best.pt"))
@@ -37,11 +28,7 @@ def find_data_yaml(start: Path = Path(".")) -> str | None:
             print(f"Auto-detected data yaml: {c}")
             return str(c)
     return None
- 
- 
-# ──────────────────────────────────────────────
-# Evaluation
-# ──────────────────────────────────────────────
+
  
 def evaluate(weights: str, data_yaml: str, imgsz: int = 640,
              device: str = "cpu", half: bool = False, split: str = "val"):
@@ -150,10 +137,7 @@ def plot_per_class(metrics, class_names: list, out_dir: str = "runs/eval"):
     print(f"Per-class AP chart → {out}")
     plt.close()
  
- 
-# ──────────────────────────────────────────────
-# CLI
-# ──────────────────────────────────────────────
+
  
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Evaluate ASL YOLOv8 model")
